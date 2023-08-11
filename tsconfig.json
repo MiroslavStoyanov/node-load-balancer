@@ -3,7 +3,7 @@
     "target": "ES2018", // Target ECMAScript 2018 (or adjust as needed)
     "module": "CommonJS", // Use CommonJS modules
     "outDir": "./dist", // Output directory for compiled JavaScript
-    "rootDir": "./src", // Source directory for TypeScript files
+    "rootDir": "./", // Source directory for TypeScript files
     "declaration": true, // Generate .d.ts declaration files
     "declarationDir": "./dist", // Output directory for .d.ts files
     "strict": true, // Enable strict type checking
@@ -23,9 +23,11 @@
     }
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "examples/**/*.ts"
   ], // Files to include for compilation
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ] // Directories to exclude from compilation
 }
