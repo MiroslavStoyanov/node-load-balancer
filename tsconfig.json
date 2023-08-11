@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2018", // Target ECMAScript 2018 (or adjust as needed)
+    "module": "CommonJS", // Use CommonJS modules
+    "outDir": "./dist", // Output directory for compiled JavaScript
+    "rootDir": "./src", // Source directory for TypeScript files
+    "declaration": true, // Generate .d.ts declaration files
+    "declarationDir": "./dist", // Output directory for .d.ts files
+    "strict": true, // Enable strict type checking
+    "esModuleInterop": true, // Enable ES module interoperability
+    "skipLibCheck": true, // Skip checking of all imported declaration files
+    "forceConsistentCasingInFileNames": true, // Enforce consistent file casing
+    "resolveJsonModule": true, // Allow importing .json files as modules
+    "baseUrl": "./", // Base URL for module resolution
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src"
+    ], // Add ./src to typeRoots
+    "paths": {
+      "*": [
+        "./node_modules/@types/*"
+      ] // Additional module paths for type resolution
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ], // Files to include for compilation
+  "exclude": [
+    "node_modules"
+  ] // Directories to exclude from compilation
+}
