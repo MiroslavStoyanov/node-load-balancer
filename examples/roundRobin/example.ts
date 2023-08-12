@@ -1,10 +1,16 @@
-import { IServer } from 'sample-load-balancer';
+import { IServer } from 'node-load-balancer';
 import { RoundRobinLoadBalancer } from '../../src/RoundRobinLoadBalancer';
 
-const serverUrls = [
-    'http://server1',
-    'http://server2',
-    'http://server3'
+const servers: IServer[] = [{
+        url: 'http://server1',
+        isActive: true
+    }, {
+        url: 'http://server2',
+        isActive: true
+    }, {
+        url: 'http://server3',
+        isActive: true
+    }
 ];
 
 const NUMBER_OF_REQUESTS = 1000;
@@ -20,7 +26,7 @@ async function simulateAsynchronousRequests(loadBalancer: RoundRobinLoadBalancer
     return Promise.all(requests);
 }
 
-const loadBalancer = new RoundRobinLoadBalancer({ serverUrls });
+const loadBalancer = new RoundRobinLoadBalancer(servers);
 
 (async () => {
     const results = await simulateAsynchronousRequests(loadBalancer, NUMBER_OF_REQUESTS);

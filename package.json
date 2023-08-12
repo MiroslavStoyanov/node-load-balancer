@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "run-round-robin-example": "node dist/examples/roundRobin/example.js",
-    "run-weighted-round-robin-example": "node dist/examples/weightedRoundRobin/example.js"
+    "run-weighted-round-robin-example": "node dist/examples/weightedRoundRobin/example.js",
+    "run-ip-hash-example": "node dist/examples/ipHash/example.js"
   },
   "keywords": [],
   "author": "",

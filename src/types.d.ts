@@ -1,11 +1,11 @@
-declare module 'sample-load-balancer' {
+declare module 'node-load-balancer' {
     export class IServer {
         url: string;
         isActive: boolean;
     }
 
     export class ILoadBalancer {
-        constructor(options: IServerOptions);
+        constructor(options: IServer[]);
         getNextActiveServer(): IServer | null;
         addServer(url: string, weight?: number): void;
         removeServer(url: string): void;
@@ -20,5 +20,9 @@ declare module 'sample-load-balancer' {
 
     export class IWeightedRoundRobinLoadBalancer extends ILoadBalancer {
         adjustServerWeight(url: string, newWeight: number): void;
+    }
+
+    export class IIPHashLoadBalancer extends ILoadBalancer {
+        getServerForRequest(requestIp: string): IServer | null;
     }
 }
