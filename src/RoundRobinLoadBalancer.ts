@@ -1,13 +1,13 @@
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 
-import { IServerOptions, IRoundRobinLoadBalancer, IServer } from 'sample-load-balancer';
+import { ILoadBalancer, IServer } from 'sample-load-balancer';
 
-export class RoundRobinLoadBalancer implements IRoundRobinLoadBalancer {
+export class RoundRobinLoadBalancer implements ILoadBalancer {
     private servers: IServer[] = [];
     private currentIndex = 0;
 
-    constructor (options: IServerOptions) {
-        this.servers = options.serverUrls.map(url => ({ url, isActive: true }));
+    constructor (options: IServer[]) {
+        this.servers = options.map(({ url, isActive }: IServer) => ({ url, isActive }));
     }
 
     getNextActiveServer(): IServer | null {

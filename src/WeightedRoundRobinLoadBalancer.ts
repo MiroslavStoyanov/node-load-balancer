@@ -1,17 +1,17 @@
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 
-import { IWeightedRoundRobinLoadBalancer, IWeightedServerOptions, IWeightedServer } from 'sample-load-balancer';
+import { IWeightedRoundRobinLoadBalancer, IWeightedServer } from 'sample-load-balancer';
 
 export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBalancer {
     private servers: IWeightedServer[] = [];
     private totalWeight = 0;
     private currentIndex = 0;
 
-    constructor(serverConfigs: IWeightedServerOptions[]) {
-        this.servers = serverConfigs.map(({ url, weight }: IWeightedServerOptions) => ({
+    constructor(serverConfigs: IWeightedServer[]) {
+        this.servers = serverConfigs.map(({ url, weight, isActive }: IWeightedServer) => ({
             url,
             weight,
-            isActive: true,
+            isActive
         }));
         this.totalWeight = this.servers.reduce((sum, server) => sum + server.weight, 0);
     }
