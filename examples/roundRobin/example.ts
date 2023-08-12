@@ -7,7 +7,7 @@ const serverUrls = [
     'http://server3'
 ];
 
-const NUMBER_OF_REQUESTS = 10000;
+const NUMBER_OF_REQUESTS = 1000;
 
 async function simulateAsynchronousRequests(loadBalancer: RoundRobinLoadBalancer, numRequests: number): Promise<IServer[]> {
     const requests: IServer[] = [];

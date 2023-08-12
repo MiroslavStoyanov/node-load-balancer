@@ -7,7 +7,7 @@ const serverConfigs = [
   { url: 'http://server3', weight: 15 },
 ];
 
-const NUMBER_OF_REQUESTS = 10000;
+const NUMBER_OF_REQUESTS = 1000;
 
 async function simulateAsynchronousRequests(loadBalancer: WeightedRoundRobinLoadBalancer, numRequests: number): Promise<IWeightedServer[]> {
   const requests: IWeightedServer[] = [];

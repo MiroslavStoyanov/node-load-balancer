@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run-round-robin-example": "node dist/examples/roundRobin/example.js",
+    "run-weighted-round-robin-example": "node dist/examples/weightedRoundRobin/example.js"
   },
   "keywords": [],
   "author": "",

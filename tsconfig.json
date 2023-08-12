@@ -11,6 +11,7 @@
     "skipLibCheck": true, // Skip checking of all imported declaration files
     "forceConsistentCasingInFileNames": true, // Enforce consistent file casing
     "resolveJsonModule": true, // Allow importing .json files as modules
+    "sourceMap": true,
     "baseUrl": "./", // Base URL for module resolution
     "typeRoots": [
       "./node_modules/@types",
