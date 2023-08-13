@@ -1,5 +1,5 @@
 import { IServer } from 'node-load-balancer';
-import { RoundRobinLoadBalancer } from '../../src/RoundRobinLoadBalancer';
+import { RoundRobinLoadBalancer } from '../../src/loadBalancers/RoundRobinLoadBalancer';
 
 const servers: IServer[] = [{
         url: 'http://server1',

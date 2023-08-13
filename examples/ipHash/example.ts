@@ -1,5 +1,5 @@
 import { IServer } from 'node-load-balancer';
-import { IPHashLoadBalancer } from '../../src/IPHashLoadBalancer';
+import { IPHashLoadBalancer } from '../../src/loadBalancers/IPHashLoadBalancer';
 
 const servers: IServer[] = [{
         url: 'http://server1',

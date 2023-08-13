@@ -1,3 +1,3 @@
-export * from './RoundRobinLoadBalancer';
-export * from './WeightedRoundRobinLoadBalancer';
-export * from './IPHashLoadBalancer';
+export * from './loadBalancers/RoundRobinLoadBalancer';
+export * from './loadBalancers/WeightedRoundRobinLoadBalancer';
+export * from './loadBalancers/IPHashLoadBalancer';

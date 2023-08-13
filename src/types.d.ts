@@ -11,7 +11,6 @@ declare module 'node-load-balancer' {
         removeServer(url: string): void;
         disableServer(url: string): void;
         enableServer(url: string): void;
-        proxyMiddleware(): void;
     }
 
     export interface IWeightedServer extends IServer {

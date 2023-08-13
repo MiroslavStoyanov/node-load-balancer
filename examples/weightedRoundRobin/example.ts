@@ -1,5 +1,5 @@
 import { IWeightedServer } from 'node-load-balancer';
-import { WeightedRoundRobinLoadBalancer } from '../../src/WeightedRoundRobinLoadBalancer';
+import { WeightedRoundRobinLoadBalancer } from '../../src/loadBalancers/WeightedRoundRobinLoadBalancer';
 
 const serverConfigs: IWeightedServer[] = [
     { url: 'http://server1', weight: 10, isActive: true },

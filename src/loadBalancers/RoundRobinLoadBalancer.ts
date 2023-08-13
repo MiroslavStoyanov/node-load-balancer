@@ -49,24 +49,4 @@ export class RoundRobinLoadBalancer implements ILoadBalancer {
             server.isActive = true;
         }
     }
-
-    proxyMiddleware(): (req: any, res: any, next: () => void) => void {
-        return (req: any, res: any, next: () => void) => {
-            const activeServer = this.getNextActiveServer();
-
-            if (activeServer) {
-                const proxyOptions: Options = {
-                    target: activeServer.url,
-                    selfHandleResponse: true,
-                };
-
-                const proxy = createProxyMiddleware(proxyOptions);
-
-                proxy(req, res, next);
-            } else {
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('No active servers available.');
-            }
-        };
-    }
 }
