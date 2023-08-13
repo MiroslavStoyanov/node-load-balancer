@@ -2,15 +2,15 @@ import { IServer } from 'node-load-balancer';
 import { IPHashLoadBalancer } from '../../src/IPHashLoadBalancer';
 
 const servers: IServer[] = [{
-    url: 'http://server1',
-    isActive: true
-}, {
-    url: 'http://server2',
-    isActive: true
-}, {
-    url: 'http://server3',
-    isActive: true
-}
+        url: 'http://server1',
+        isActive: true
+    }, {
+        url: 'http://server2',
+        isActive: true
+    }, {
+        url: 'http://server3',
+        isActive: true
+    }
 ];
 
 const ipHashLoadBalancer = new IPHashLoadBalancer(servers);
