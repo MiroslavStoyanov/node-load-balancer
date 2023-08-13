@@ -1,35 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES2018", // Target ECMAScript 2018 (or adjust as needed)
-    "module": "CommonJS", // Use CommonJS modules
-    "outDir": "./dist", // Output directory for compiled JavaScript
-    "rootDir": "", // Source directory for TypeScript files
-    "declaration": true, // Generate .d.ts declaration files
-    "declarationDir": "./dist", // Output directory for .d.ts files
-    "strict": true, // Enable strict type checking
-    "esModuleInterop": true, // Enable ES module interoperability
-    "skipLibCheck": true, // Skip checking of all imported declaration files
-    "forceConsistentCasingInFileNames": true, // Enforce consistent file casing
-    "resolveJsonModule": true, // Allow importing .json files as modules
-    "sourceMap": true,
-    "baseUrl": "./", // Base URL for module resolution
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src"
-    ], // Add ./src to typeRoots
-    "paths": {
-      "*": [
-        "./node_modules/@types/*"
-      ] // Additional module paths for type resolution
-    }
+    "target": "ES2019",
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "rootDir": "",
+    "declaration": true,
+    "declarationDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true
   },
-  "include": [
-    "src/**/*.ts",
-    "examples/**/*.ts",
-    "src/types.d.ts"
-  ], // Files to include for compilation
-  "exclude": [
-    "node_modules",
-    "dist"
-  ] // Directories to exclude from compilation
+  "include": ["src/**/*.ts", "types.d.ts", "examples/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

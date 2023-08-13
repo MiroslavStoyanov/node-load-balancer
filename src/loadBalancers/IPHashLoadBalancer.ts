@@ -1,5 +1,3 @@
-import { Options, createProxyMiddleware } from 'http-proxy-middleware';
-
 import { IIPHashLoadBalancer, IServer } from 'node-load-balancer';
 
 export class IPHashLoadBalancer implements IIPHashLoadBalancer {

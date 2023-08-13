@@ -1,5 +1,3 @@
-import { createProxyMiddleware, Options } from 'http-proxy-middleware';
-
 import { IWeightedRoundRobinLoadBalancer, IWeightedServer } from 'node-load-balancer';
 
 export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBalancer {

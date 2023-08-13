@@ -1,5 +1,3 @@
-import { createProxyMiddleware, Options } from 'http-proxy-middleware';
-
 import { ILoadBalancer, IServer } from 'node-load-balancer';
 
 export class RoundRobinLoadBalancer implements ILoadBalancer {
