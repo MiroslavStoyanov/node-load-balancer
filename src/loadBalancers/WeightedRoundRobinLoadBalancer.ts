@@ -1,19 +1,30 @@
 import { IWeightedRoundRobinLoadBalancer, IWeightedServer } from 'node-load-balancer';
 
+/**
+ * Represents a weighted round-robin load balancer that distributes incoming requests unevenly across backend servers.
+ * Each server is given a weight, allowing some severs to receive more of the traffic than others.
+ */
 export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBalancer {
     private servers: IWeightedServer[] = [];
     private totalWeight = 0;
     private currentIndex = 0;
 
-    constructor(serverConfigs: IWeightedServer[]) {
-        this.servers = serverConfigs.map(({ url, weight, isActive }: IWeightedServer) => ({
-            url,
-            weight,
-            isActive
-        }));
+    /**
+     * Creates an instance of the WeightedRoundRobinLoadBalancer.
+     * It initializes the list of servers that are used to spread the load unevenly and
+     * the total weight of the servers based on predefined data which is needed to determine
+     * where the request needs to be sent
+     * @param servers - An array of backend servers to send the requests across.
+     */
+    constructor(servers: IWeightedServer[]) {
+        this.servers = servers;
         this.totalWeight = this.servers.reduce((sum, server) => sum + server.weight, 0);
     }
 
+    /**
+     * Gets the next active server based on the weighted round-robin logic.
+     * @returns The next active server or null if no servers are available.
+     */
     getNextActiveServer(): IWeightedServer | null {
         const activeServers = this.servers.filter(server => server.isActive);
 
@@ -35,10 +46,18 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
         return activeServers[index];
     }
 
+    /**
+     * Adds a new server based on the weighted round-robin logic.
+     * @param url - The URL of the new server that is going to be added to the array.
+     */
     addServer(url: string, weight: number): void {
         this.servers.push({ url, weight, isActive: true });
     }
 
+    /**
+     * Removes a server based on the weighted round-robin logic.
+     * @param url - The URL of the server that is going to be removed from the array.
+     */
     removeServer(url: string): void {
         const serverIndex = this.servers.findIndex(server => server.url === url);
 
@@ -47,6 +66,10 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
         }
     }
 
+    /**
+     * Disables a server from the list of active ones but does not remove it.
+     * @param url - The URL of the server that needs to be tagged as inactive.
+     */
     disableServer(url: string): void {
         const server = this.servers.find(server => server.url === url);
 
@@ -55,6 +78,10 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
         }
     }
 
+    /**
+     * Enables a server that was previously disabled.
+     * @param url - The URL of the server that needs to be tagged as active.
+     */
     enableServer(url: string): void {
         const server = this.servers.find(server => server.url === url);
 
@@ -63,6 +90,11 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
         }
     }
 
+    /**
+     * Adjusts the server weight based on the weighted round-robin logic.
+     * @param url - The URL of the server whose weight needs to be adjusted.
+     * @param newWeight - The new weight of the server
+     */
     adjustServerWeight(url: string, newWeight: number): void {
         const server = this.servers.find(server => server.url === url);
 

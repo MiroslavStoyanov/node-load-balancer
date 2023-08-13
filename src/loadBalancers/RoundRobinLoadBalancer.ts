@@ -1,13 +1,26 @@
 import { ILoadBalancer, IServer } from 'node-load-balancer';
 
+/**
+ * Represents a round-robin load balancer that distributes incoming requests evenly across backend servers.
+ * Distributes the traffic to the load balancers in rotation, each request going to the next backend server in the list.
+ * Once the end of the list is reached, it loops back to the first server.
+ */
 export class RoundRobinLoadBalancer implements ILoadBalancer {
     private servers: IServer[] = [];
     private currentIndex = 0;
 
-    constructor (options: IServer[]) {
-        this.servers = options.map(({ url, isActive }: IServer) => ({ url, isActive }));
+    /**
+     * Creates an instance of the RoundRobinLoadBalancer.
+     * @param servers - An array of backend servers to balance the requests across.
+     */
+    constructor (servers: IServer[]) {
+        this.servers = servers;
     }
 
+    /**
+     * Gets the next active server based on the round-robin logic.
+     * @returns The next active server or null if no servers are available.
+     */
     getNextActiveServer(): IServer | null {
         const activeServers = this.servers.filter(server => server.isActive);
 
@@ -20,10 +33,18 @@ export class RoundRobinLoadBalancer implements ILoadBalancer {
         return server;
     }
 
-    addServer(url: string) {
+    /**
+     * Adds a new server based on the round-robin logic.
+     * @param url - The URL of the new server that is going to be added to the array.
+     */
+    addServer(url: string): void {
         this.servers.push({ url, isActive: true });
     }
 
+    /**
+     * Removes a server based on the round-robin logic.
+     * @param url - The URL of the server that is going to be removed from the array.
+     */
     removeServer(url: string) {
         const serverIndex = this.servers.findIndex(server => server.url === url);
 
@@ -32,7 +53,11 @@ export class RoundRobinLoadBalancer implements ILoadBalancer {
         }
     }
 
-    disableServer(url: string) {
+    /**
+     * Disables a server from the list of active ones but does not remove it.
+     * @param url - The URL of the server that needs to be tagged as inactive.
+     */
+    disableServer(url: string): void {
         const server = this.servers.find(server => server.url === url);
 
         if (server) {
@@ -40,7 +65,11 @@ export class RoundRobinLoadBalancer implements ILoadBalancer {
         }
     }
 
-    enableServer(url: string) {
+    /**
+     * Enables a server that was previously disabled.
+     * @param url - The URL of the server that needs to be tagged as active.
+     */
+    enableServer(url: string): void {
         const server = this.servers.find(server => server.url === url);
 
         if (server) {
