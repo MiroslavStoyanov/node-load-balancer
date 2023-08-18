@@ -21,7 +21,7 @@ export class IPHashLoadBalancer implements IIPHashLoadBalancer {
      * @returns The next active server or null if no servers are available.
      */
     getNextActiveServer(): IServer | null {
-        const activeServers = this.servers.filter(server => server.isActive);
+        const activeServers = this.servers.filter((server: IServer) => server.isActive);
 
         if (activeServers.length === 0) {
             return null;
@@ -45,7 +45,7 @@ export class IPHashLoadBalancer implements IIPHashLoadBalancer {
      * @param url - The URL of the server that is going to be removed from the array.
      */
     removeServer(url: string): void {
-        const serverIndex = this.servers.findIndex(server => server.url === url);
+        const serverIndex = this.servers.findIndex((server: IServer) => server.url === url);
 
         if (serverIndex !== -1) {
             this.servers.splice(serverIndex, 1);
@@ -57,7 +57,7 @@ export class IPHashLoadBalancer implements IIPHashLoadBalancer {
      * @param url - The URL of the server that needs to be tagged as inactive.
      */
     disableServer(url: string): void {
-        const server = this.servers.find(server => server.url === url);
+        const server = this.servers.find((server: IServer) => server.url === url);
 
         if (server) {
             server.isActive = false;
@@ -69,7 +69,7 @@ export class IPHashLoadBalancer implements IIPHashLoadBalancer {
      * @param url - The URL of the server that needs to be tagged as active.
      */
     enableServer(url: string): void {
-        const server = this.servers.find(server => server.url === url);
+        const server = this.servers.find((server: IServer) => server.url === url);
 
         if (server) {
             server.isActive = true;

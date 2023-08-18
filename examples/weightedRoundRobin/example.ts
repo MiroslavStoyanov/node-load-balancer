@@ -9,7 +9,10 @@ const serverConfigs: IWeightedServer[] = [
 
 const NUMBER_OF_REQUESTS = 1000;
 
-async function simulateAsynchronousRequests(loadBalancer: WeightedRoundRobinLoadBalancer, numRequests: number): Promise<IWeightedServer[]> {
+async function simulateAsynchronousRequests(
+    loadBalancer: WeightedRoundRobinLoadBalancer,
+    numRequests: number,
+): Promise<IWeightedServer[]> {
     const requests: IWeightedServer[] = [];
     for (let i = 0; i < numRequests; i++) {
         const server = loadBalancer.getNextActiveServer();

@@ -1,16 +1,19 @@
 import { IServer } from 'node-load-balancer';
 import { IPHashLoadBalancer } from '../../src/loadBalancers/IPHashLoadBalancer';
 
-const servers: IServer[] = [{
+const servers: IServer[] = [
+    {
         url: 'http://server1',
-        isActive: true
-    }, {
+        isActive: true,
+    },
+    {
         url: 'http://server2',
-        isActive: true
-    }, {
+        isActive: true,
+    },
+    {
         url: 'http://server3',
-        isActive: true
-    }
+        isActive: true,
+    },
 ];
 
 const ipHashLoadBalancer = new IPHashLoadBalancer(servers);
@@ -22,10 +25,10 @@ const requestIps = [
     '192.168.1.3',
     '192.168.1.2',
     '192.168.1.2',
-    '192.168.1.3'
+    '192.168.1.3',
 ];
 
-requestIps.forEach(ip => {
+requestIps.forEach((ip) => {
     const activeServer = ipHashLoadBalancer.getNextActiveServer();
     console.log(`Request from IP ${ip} sent to: ${activeServer?.url}`);
 });
