@@ -2,11 +2,11 @@ import { IWeightedRoundRobinLoadBalancer, IWeightedServer } from 'node-load-bala
 
 /**
  * Represents a weighted round-robin load balancer that distributes incoming requests unevenly across backend servers.
- * Each server is given a weight, allowing some severs to receive more of the traffic than others.
+ * Each server is given a weight, allowing some servers to receive more of the traffic than others.
  */
 export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBalancer {
     private servers: IWeightedServer[] = [];
-    private totalWeight = 0;
+    private remainingServerCapacity: Array<{ server: IWeightedServer; capacity: number }> = [];
     private currentIndex = 0;
 
     /**
@@ -18,7 +18,6 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
      */
     constructor(servers: IWeightedServer[]) {
         this.servers = servers;
-        this.totalWeight = this.servers.reduce((sum, server) => sum + server.weight, 0);
     }
 
     /**
@@ -32,18 +31,45 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
             return null;
         }
 
-        let index = this.currentIndex;
-        let currentWeight = 0;
+        // short-circuit if just 1 server
+        if (activeServers.length === 1) {
+            return activeServers[0];
+        }
 
-        do {
-            currentWeight += activeServers[index].weight;
-            if (++index >= activeServers.length) {
-                index = 0;
+        if (this.remainingServerCapacity.length === 0) {
+            this.remainingServerCapacity = activeServers.map((server: IWeightedServer) => ({
+                server,
+                capacity: server.weight,
+            }));
+        }
+
+        while (true) {
+            // Loop through the servers
+            const serverInfo = this.remainingServerCapacity[this.currentIndex];
+
+            if (serverInfo.capacity > 0) {
+                // This server can handle more requests
+                serverInfo.capacity--;
+
+                if (serverInfo.capacity === 0) {
+                    // If this server is drained, increment currentIndex
+                    this.currentIndex = (this.currentIndex + 1) % activeServers.length;
+                }
+
+                return serverInfo.server;
+            } else {
+                // Check if all servers are drained
+                const allDrained = this.remainingServerCapacity.every((info) => info.capacity === 0);
+
+                if (allDrained) {
+                    // Rehydrate all servers
+                    this.remainingServerCapacity.forEach((info) => (info.capacity = info.server.weight));
+                } else {
+                    // Move to the next server
+                    this.currentIndex = (this.currentIndex + 1) % activeServers.length;
+                }
             }
-        } while (currentWeight < this.totalWeight);
-
-        this.currentIndex = index;
-        return activeServers[index];
+        }
     }
 
     /**
@@ -100,7 +126,6 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
 
         if (server) {
             server.weight = newWeight;
-            this.totalWeight = this.servers.reduce((sum, srv) => sum + srv.weight, 0);
         }
     }
 }

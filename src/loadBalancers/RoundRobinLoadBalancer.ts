@@ -28,6 +28,11 @@ export class RoundRobinLoadBalancer implements ILoadBalancer {
             return null;
         }
 
+        // short-circuit if just 1 server
+        if (activeServers.length === 1) {
+            return activeServers[0];
+        }
+
         const server = activeServers[this.currentIndex];
         this.currentIndex = (this.currentIndex + 1) % activeServers.length;
         return server;
