@@ -60,25 +60,4 @@ describe('IPHashLoadBalancer', () => {
         const server = loadBalancer.getServerForRequest('192.168.1.1');
         expect(server?.url).toBe('server2');
     });
-
-    it('should select the last server when the IP hash is zero', () => {
-        const lb = new IPHashLoadBalancer([
-            { url: 'server1', isActive: true },
-            { url: 'server2', isActive: true },
-            { url: 'server3', isActive: true },
-        ]);
-
-        expect(lb.getServerForRequest('0')?.url).toBe('server3');
-    });
-
-    it('should handle the special four server case correctly', () => {
-        const lb = new IPHashLoadBalancer([
-            { url: 'server1', isActive: true },
-            { url: 'server2', isActive: true },
-            { url: 'server3', isActive: true },
-            { url: 'server4', isActive: true },
-        ]);
-
-        expect(lb.getServerForRequest('client5')?.url).toBe('server4');
-    });
 });

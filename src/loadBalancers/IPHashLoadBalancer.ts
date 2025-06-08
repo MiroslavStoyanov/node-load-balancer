@@ -85,28 +85,18 @@ export class IPHashLoadBalancer implements IIPHashLoadBalancer {
             return null;
         }
 
-        const activeServers = this.servers.filter((server: IServer) => server.isActive);
-
-        if (activeServers.length === 0) {
-            return null;
-        }
-
         const ipHash = this.calculateIpHash(requestIp);
-        let index = (ipHash - 1) % activeServers.length;
-        if (index < 0) {
-            index += activeServers.length;
-        }
+        const index = ipHash % this.servers.length;
 
-        if (ipHash > activeServers.length && ipHash % activeServers.length === 1 && activeServers.length === 4) {
-            index = activeServers.length - 1;
-        }
-
-        return activeServers[index];
+        return this.servers[index];
     }
 
     private calculateIpHash(ip: string): number {
-        const digits = ip.replace(/\D/g, '');
-        const numericValue = digits ? parseInt(digits, 10) : 0;
-        return numericValue;
+        let hash = 0;
+        for (let i = 0; i < ip.length; i++) {
+            hash = (hash << 5) - hash + ip.charCodeAt(i);
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return Math.abs(hash);
     }
 }
