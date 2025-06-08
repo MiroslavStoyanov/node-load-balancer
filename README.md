@@ -67,7 +67,7 @@ const serverUrls = [
   // ... more server URLs
 ];
 
-const loadBalancer = new IPHashLoadBalancer({ serverUrls });
+const loadBalancer = new IPHashLoadBalancer(serverUrls);
 
 const requestIp = '192.168.1.1';
 const activeServer = loadBalancer.getServerForRequest(requestIp);
@@ -105,6 +105,3 @@ Contributions are welcome! Please fork the repository and create a pull request 
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
-```css
-
-```
