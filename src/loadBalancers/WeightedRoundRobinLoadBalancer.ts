@@ -78,6 +78,8 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
      */
     addServer(url: string, weight: number): void {
         this.servers.push({ url, weight, isActive: true });
+        this.remainingServerCapacity = [];
+        this.currentIndex = 0;
     }
 
     /**
@@ -89,6 +91,8 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
 
         if (serverIndex !== -1) {
             this.servers.splice(serverIndex, 1);
+            this.remainingServerCapacity = [];
+            this.currentIndex = 0;
         }
     }
 

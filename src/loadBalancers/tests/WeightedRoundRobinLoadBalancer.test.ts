@@ -125,4 +125,38 @@ describe('WeightedRoundRobinLoadBalancer', () => {
 
         expect(result).toEqual(expectedOrder);
     });
+
+    it('should reset state when a server is added', () => {
+        const servers = [
+            { url: 'a', isActive: true, weight: 1 },
+            { url: 'b', isActive: true, weight: 1 },
+        ];
+        const balancer = new WeightedRoundRobinLoadBalancer(servers);
+
+        // consume one server to move the index
+        expect(balancer.getNextActiveServer()?.url).toBe('a');
+
+        balancer.addServer('c', 1);
+
+        expect(balancer.getNextActiveServer()?.url).toBe('a');
+        expect(balancer.getNextActiveServer()?.url).toBe('b');
+        expect(balancer.getNextActiveServer()?.url).toBe('c');
+    });
+
+    it('should reset state when a server is removed', () => {
+        const servers = [
+            { url: 'a', isActive: true, weight: 1 },
+            { url: 'b', isActive: true, weight: 1 },
+            { url: 'c', isActive: true, weight: 1 },
+        ];
+        const balancer = new WeightedRoundRobinLoadBalancer(servers);
+
+        // consume one server to move the index
+        expect(balancer.getNextActiveServer()?.url).toBe('a');
+
+        balancer.removeServer('a');
+
+        expect(balancer.getNextActiveServer()?.url).toBe('b');
+        expect(balancer.getNextActiveServer()?.url).toBe('c');
+    });
 });
