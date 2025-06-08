@@ -1,11 +1,11 @@
 import { IIPHashLoadBalancer, IServer } from 'node-load-balancer';
+import { BaseLoadBalancer } from './BaseLoadBalancer';
 
 /**
  * Represents an IP hash load balancer that distributes incoming requests unevenly across backend servers.
  * The client’s IP address is hashed and the hash is used to determine which server to send the request to.
  */
-export class IPHashLoadBalancer implements IIPHashLoadBalancer {
-    private servers: IServer[] = [];
+export class IPHashLoadBalancer extends BaseLoadBalancer<IServer> implements IIPHashLoadBalancer {
     private currentIndex = 0;
 
     /**
@@ -13,7 +13,7 @@ export class IPHashLoadBalancer implements IIPHashLoadBalancer {
      * @param servers - An array of backend servers to send the requests across.
      */
     constructor(servers: IServer[]) {
-        this.servers = servers;
+        super(servers);
     }
 
     /**
@@ -30,50 +30,6 @@ export class IPHashLoadBalancer implements IIPHashLoadBalancer {
         const server = activeServers[this.currentIndex];
         this.currentIndex = (this.currentIndex + 1) % activeServers.length;
         return server;
-    }
-
-    /**
-     * Adds a new server based on on the IP hash logic.
-     * @param url - The URL of the new server that is going to be added to the array.
-     */
-    addServer(url: string): void {
-        this.servers.push({ url, isActive: true });
-    }
-
-    /**
-     * Removes a server based on the IP hash logic.
-     * @param url - The URL of the server that is going to be removed from the array.
-     */
-    removeServer(url: string): void {
-        const serverIndex = this.servers.findIndex((server: IServer) => server.url === url);
-
-        if (serverIndex !== -1) {
-            this.servers.splice(serverIndex, 1);
-        }
-    }
-
-    /**
-     * Disables a server from the list of active ones but does not remove it.
-     * @param url - The URL of the server that needs to be tagged as inactive.
-     */
-    disableServer(url: string): void {
-        const server = this.servers.find((server: IServer) => server.url === url);
-
-        if (server) {
-            server.isActive = false;
-        }
-    }
-
-    /**
-     * Enables a server that was previously disabled.
-     * @param url - The URL of the server that needs to be tagged as active.
-     */
-    enableServer(url: string): void {
-        const server = this.servers.find((server: IServer) => server.url === url);
-
-        if (server) {
-            server.isActive = true;
-        }
     }
 
     /**
