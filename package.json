@@ -8,6 +8,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"examples/**/*.ts\"",
     "build": "tsc",
     "test": "jest",
+    "coverage": "jest --coverage",
     "run-round-robin-example": "grunt shell:startRoundRobinExample",
     "run-weighted-round-robin-example": "grunt shell:startWeightedRoundRobinExample",
     "run-ip-hash-example": "grunt shell:startIPHashExample"
