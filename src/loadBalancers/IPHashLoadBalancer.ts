@@ -10,7 +10,7 @@ export class IPHashLoadBalancer implements IIPHashLoadBalancer {
 
     /**
      * Creates an instance of the IPHashLoadBalancer.
-     * @param servers - An array of backend servers to sendthe requests across.
+     * @param servers - An array of backend servers to send the requests across.
      */
     constructor(servers: IServer[]) {
         this.servers = servers;
