@@ -125,6 +125,14 @@ async function bootstrap() {
 bootstrap();
 ```
 You can also look at `examples/nestjs/main.ts` for a complete example.
+## Docker
+
+To run the tests in a containerized environment, build the Docker image and run it:
+```bash
+docker build -t node-load-balancer .
+docker run --rm node-load-balancer
+```
+
 
 ## Contributing
 Contributions are welcome! Please fork the repository and create a pull request with your enhancements or bug fixes.

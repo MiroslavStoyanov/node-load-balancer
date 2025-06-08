@@ -1,0 +1,15 @@
+name: Pull Request CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker image
+        run: docker build -t node-load-balancer .
+      - name: Run tests
+        run: docker run --rm node-load-balancer
