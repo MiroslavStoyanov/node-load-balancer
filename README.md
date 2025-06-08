@@ -100,11 +100,34 @@ app.listen(PORT, () => {
 });
 ```
 
+## Integrating with NestJS
+NestJS applications can use the same middleware approach because they run on Express by default. Add the middleware in `main.ts`:
+```typescript
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { RoundRobinLoadBalancer, proxyMiddleware } from 'node-load-balancer';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  const serverUrls = [
+    'http://server1',
+    'http://server2',
+    'http://server3',
+  ];
+
+  const loadBalancer = new RoundRobinLoadBalancer(serverUrls);
+
+  app.use(proxyMiddleware(loadBalancer));
+
+  await app.listen(3000);
+}
+bootstrap();
+```
+You can also look at `examples/nestjs/main.ts` for a complete example.
+
 ## Contributing
 Contributions are welcome! Please fork the repository and create a pull request with your enhancements or bug fixes.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
-```css
-
-```
