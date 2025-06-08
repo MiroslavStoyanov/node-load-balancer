@@ -67,7 +67,7 @@ const serverUrls = [
   // ... more server URLs
 ];
 
-const loadBalancer = new IPHashLoadBalancer({ serverUrls });
+const loadBalancer = new IPHashLoadBalancer(serverUrls);
 
 const requestIp = '192.168.1.1';
 const activeServer = loadBalancer.getServerForRequest(requestIp);
