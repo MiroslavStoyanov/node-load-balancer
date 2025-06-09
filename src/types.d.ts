@@ -42,4 +42,15 @@ declare module 'node-load-balancer' {
     export class IIPHashLoadBalancer extends ILoadBalancer {
         getServerForRequest(requestIp: string): IServer | null;
     }
+
+    export type LoadBalancerType = 'round-robin' | 'weighted-round-robin' | 'ip-hash';
+
+    export interface LoadBalancerFactoryConfig {
+        type: LoadBalancerType;
+        servers: Array<IServer | IWeightedServer>;
+    }
+
+    export class LoadBalancerFactory {
+        static create(config: LoadBalancerFactoryConfig): ILoadBalancingStrategy;
+    }
 }

@@ -74,6 +74,23 @@ const activeServer = loadBalancer.getServerForRequest(requestIp);
 console.log(`Request from IP ${requestIp} sent to: ${activeServer?.url}`);
 ```
 
+#### Load Balancer Factory
+Use the `LoadBalancerFactory` to instantiate a strategy based on configuration:
+```typescript
+import { LoadBalancerFactory, LoadBalancer } from 'node-load-balancer';
+
+const config = {
+  type: 'round-robin' as const,
+  servers: [
+    { url: 'http://server1', isActive: true },
+    { url: 'http://server2', isActive: true },
+  ],
+};
+
+const strategy = LoadBalancerFactory.create(config);
+const loadBalancer = new LoadBalancer(strategy);
+```
+
 ## Integrating with Express.js
 You can easily integrate the load balancer library with an Express.js application using the proxyMiddleware function provided by each load balancer. Here's how:
 ```typescript
