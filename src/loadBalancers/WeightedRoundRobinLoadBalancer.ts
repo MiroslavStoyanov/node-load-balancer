@@ -14,6 +14,7 @@ export class WeightedRoundRobinLoadBalancer
         server: IWeightedServer;
         capacity: number;
     }> = [];
+
     private currentIndex = 0;
 
     /**
