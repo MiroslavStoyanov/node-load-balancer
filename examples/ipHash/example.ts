@@ -29,6 +29,6 @@ const requestIps = [
 ];
 
 requestIps.forEach((ip) => {
-    const activeServer = ipHashLoadBalancer.getNextActiveServer();
+    const activeServer = ipHashLoadBalancer.getServerForRequest(ip);
     console.log(`Request from IP ${ip} sent to: ${activeServer?.url}`);
 });

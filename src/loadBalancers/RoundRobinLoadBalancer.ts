@@ -1,12 +1,12 @@
 import { ILoadBalancer, IServer } from 'node-load-balancer';
+import { BaseLoadBalancer } from './BaseLoadBalancer';
 
 /**
  * Represents a round-robin load balancer that distributes incoming requests evenly across backend servers.
  * Distributes the traffic to the load balancers in rotation, each request going to the next backend server in the list.
  * Once the end of the list is reached, it loops back to the first server.
  */
-export class RoundRobinLoadBalancer implements ILoadBalancer {
-    private servers: IServer[] = [];
+export class RoundRobinLoadBalancer extends BaseLoadBalancer<IServer> implements ILoadBalancer {
     private currentIndex = 0;
 
     /**
@@ -14,7 +14,7 @@ export class RoundRobinLoadBalancer implements ILoadBalancer {
      * @param servers - An array of backend servers to balance the requests across.
      */
     constructor(servers: IServer[]) {
-        this.servers = servers;
+        super(servers);
     }
 
     /**
@@ -36,49 +36,5 @@ export class RoundRobinLoadBalancer implements ILoadBalancer {
         const server = activeServers[this.currentIndex];
         this.currentIndex = (this.currentIndex + 1) % activeServers.length;
         return server;
-    }
-
-    /**
-     * Adds a new server based on the round-robin logic.
-     * @param url - The URL of the new server that is going to be added to the array.
-     */
-    addServer(url: string): void {
-        this.servers.push({ url, isActive: true });
-    }
-
-    /**
-     * Removes a server based on the round-robin logic.
-     * @param url - The URL of the server that is going to be removed from the array.
-     */
-    removeServer(url: string) {
-        const serverIndex = this.servers.findIndex((server: IServer) => server.url === url);
-
-        if (serverIndex !== -1) {
-            this.servers.splice(serverIndex, 1);
-        }
-    }
-
-    /**
-     * Disables a server from the list of active ones but does not remove it.
-     * @param url - The URL of the server that needs to be tagged as inactive.
-     */
-    disableServer(url: string): void {
-        const server = this.servers.find((server: IServer) => server.url === url);
-
-        if (server) {
-            server.isActive = false;
-        }
-    }
-
-    /**
-     * Enables a server that was previously disabled.
-     * @param url - The URL of the server that needs to be tagged as active.
-     */
-    enableServer(url: string): void {
-        const server = this.servers.find((server: IServer) => server.url === url);
-
-        if (server) {
-            server.isActive = true;
-        }
     }
 }
