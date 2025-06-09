@@ -17,10 +17,16 @@ export class IPHashLoadBalancer extends BaseLoadBalancer<IServer> implements IIP
     }
 
     /**
-     * Gets the next active server based on the IP hash logic.
-     * @returns The next active server or null if no servers are available.
+     * Returns the next active server in a round-robin fashion.
+     * This method is kept for compatibility with the base interface and does not
+     * take the request IP into account. For IP-based routing, use
+     * {@link getServerForRequest} instead.
      */
     getNextActiveServer(): IServer | null {
+        return this.getNextServerRoundRobin();
+    }
+
+    private getNextServerRoundRobin(): IServer | null {
         const activeServers = this.servers.filter((server: IServer) => server.isActive);
 
         if (activeServers.length === 0) {
