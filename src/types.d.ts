@@ -13,6 +13,24 @@ declare module 'node-load-balancer' {
         enableServer(url: string): void;
     }
 
+    export interface ILoadBalancingStrategy {
+        getNextActiveServer(): IServer | null;
+        addServer(url: string, weight?: number): void;
+        removeServer(url: string): void;
+        disableServer(url: string): void;
+        enableServer(url: string): void;
+    }
+
+    export class LoadBalancer implements ILoadBalancingStrategy {
+        constructor(strategy: ILoadBalancingStrategy);
+        setStrategy(strategy: ILoadBalancingStrategy): void;
+        getNextActiveServer(): IServer | null;
+        addServer(url: string, weight?: number): void;
+        removeServer(url: string): void;
+        disableServer(url: string): void;
+        enableServer(url: string): void;
+    }
+
     export interface IWeightedServer extends IServer {
         weight: number;
     }

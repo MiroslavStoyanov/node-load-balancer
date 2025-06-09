@@ -1,12 +1,19 @@
-import { IWeightedRoundRobinLoadBalancer, IWeightedServer } from 'node-load-balancer';
+import { IWeightedServer } from 'node-load-balancer';
+import { BaseLoadBalancer } from './BaseLoadBalancer';
+import { ILoadBalancingStrategy } from './LoadBalancingStrategy';
 
 /**
  * Represents a weighted round-robin load balancer that distributes incoming requests unevenly across backend servers.
  * Each server is given a weight, allowing some servers to receive more of the traffic than others.
  */
-export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBalancer {
-    private servers: IWeightedServer[] = [];
-    private remainingServerCapacity: Array<{ server: IWeightedServer; capacity: number }> = [];
+export class WeightedRoundRobinLoadBalancer
+    extends BaseLoadBalancer<IWeightedServer>
+    implements ILoadBalancingStrategy
+{
+    private remainingServerCapacity: Array<{
+        server: IWeightedServer;
+        capacity: number;
+    }> = [];
     private currentIndex = 0;
 
     /**
@@ -17,7 +24,7 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
      * @param servers - An array of backend servers to send the requests across.
      */
     constructor(servers: IWeightedServer[]) {
-        this.servers = servers;
+        super(servers);
     }
 
     /**
@@ -87,37 +94,9 @@ export class WeightedRoundRobinLoadBalancer implements IWeightedRoundRobinLoadBa
      * @param url - The URL of the server that is going to be removed from the array.
      */
     removeServer(url: string): void {
-        const serverIndex = this.servers.findIndex((server: IWeightedServer) => server.url === url);
-
-        if (serverIndex !== -1) {
-            this.servers.splice(serverIndex, 1);
-            this.remainingServerCapacity = [];
-            this.currentIndex = 0;
-        }
-    }
-
-    /**
-     * Disables a server from the list of active ones but does not remove it.
-     * @param url - The URL of the server that needs to be tagged as inactive.
-     */
-    disableServer(url: string): void {
-        const server = this.servers.find((server: IWeightedServer) => server.url === url);
-
-        if (server) {
-            server.isActive = false;
-        }
-    }
-
-    /**
-     * Enables a server that was previously disabled.
-     * @param url - The URL of the server that needs to be tagged as active.
-     */
-    enableServer(url: string): void {
-        const server = this.servers.find((server: IWeightedServer) => server.url === url);
-
-        if (server) {
-            server.isActive = true;
-        }
+        super.removeServer(url);
+        this.remainingServerCapacity = [];
+        this.currentIndex = 0;
     }
 
     /**
