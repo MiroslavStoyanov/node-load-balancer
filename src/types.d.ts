@@ -13,6 +13,24 @@ declare module 'node-load-balancer' {
         enableServer(url: string): void;
     }
 
+    export interface ILoadBalancingStrategy {
+        getNextActiveServer(): IServer | null;
+        addServer(url: string, weight?: number): void;
+        removeServer(url: string): void;
+        disableServer(url: string): void;
+        enableServer(url: string): void;
+    }
+
+    export class LoadBalancer implements ILoadBalancingStrategy {
+        constructor(strategy: ILoadBalancingStrategy);
+        setStrategy(strategy: ILoadBalancingStrategy): void;
+        getNextActiveServer(): IServer | null;
+        addServer(url: string, weight?: number): void;
+        removeServer(url: string): void;
+        disableServer(url: string): void;
+        enableServer(url: string): void;
+    }
+
     export interface IWeightedServer extends IServer {
         weight: number;
     }
@@ -23,5 +41,16 @@ declare module 'node-load-balancer' {
 
     export class IIPHashLoadBalancer extends ILoadBalancer {
         getServerForRequest(requestIp: string): IServer | null;
+    }
+
+    export type LoadBalancerType = 'round-robin' | 'weighted-round-robin' | 'ip-hash';
+
+    export interface LoadBalancerFactoryConfig {
+        type: LoadBalancerType;
+        servers: Array<IServer | IWeightedServer>;
+    }
+
+    export class LoadBalancerFactory {
+        static create(config: LoadBalancerFactoryConfig): ILoadBalancingStrategy;
     }
 }

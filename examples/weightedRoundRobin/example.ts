@@ -1,4 +1,5 @@
 import { IWeightedServer } from 'node-load-balancer';
+import { LoadBalancer } from '../../src/loadBalancers/LoadBalancer';
 import { WeightedRoundRobinLoadBalancer } from '../../src/loadBalancers/WeightedRoundRobinLoadBalancer';
 
 const serverConfigs: IWeightedServer[] = [
@@ -10,7 +11,7 @@ const serverConfigs: IWeightedServer[] = [
 const NUMBER_OF_REQUESTS = 1000;
 
 async function simulateAsynchronousRequests(
-    loadBalancer: WeightedRoundRobinLoadBalancer,
+    loadBalancer: LoadBalancer,
     numRequests: number,
 ): Promise<IWeightedServer[]> {
     const requests: IWeightedServer[] = [];
@@ -23,7 +24,8 @@ async function simulateAsynchronousRequests(
     return Promise.all(requests);
 }
 
-const loadBalancer = new WeightedRoundRobinLoadBalancer(serverConfigs);
+const strategy = new WeightedRoundRobinLoadBalancer(serverConfigs);
+const loadBalancer = new LoadBalancer(strategy);
 
 (async () => {
     const results = await simulateAsynchronousRequests(loadBalancer, NUMBER_OF_REQUESTS);
