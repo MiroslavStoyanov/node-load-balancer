@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { ILoadBalancer } from 'node-load-balancer';
+import { ILoadBalancingStrategy } from '../loadBalancers/LoadBalancingStrategy';
 import { Request, Response } from 'express';
 
-export function proxyMiddleware(loadBalancer: ILoadBalancer) {
+export function proxyMiddleware(loadBalancer: ILoadBalancingStrategy) {
     return async (req: Request, res: Response) => {
         try {
             const activeServer = loadBalancer.getNextActiveServer();

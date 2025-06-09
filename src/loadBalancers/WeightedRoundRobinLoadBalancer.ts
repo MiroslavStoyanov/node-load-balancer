@@ -1,5 +1,6 @@
-import { IWeightedRoundRobinLoadBalancer, IWeightedServer } from 'node-load-balancer';
+import { IWeightedServer } from 'node-load-balancer';
 import { BaseLoadBalancer } from './BaseLoadBalancer';
+import { ILoadBalancingStrategy } from './LoadBalancingStrategy';
 
 /**
  * Represents a weighted round-robin load balancer that distributes incoming requests unevenly across backend servers.
@@ -7,9 +8,13 @@ import { BaseLoadBalancer } from './BaseLoadBalancer';
  */
 export class WeightedRoundRobinLoadBalancer
     extends BaseLoadBalancer<IWeightedServer>
-    implements IWeightedRoundRobinLoadBalancer
+    implements ILoadBalancingStrategy
 {
-    private remainingServerCapacity: Array<{ server: IWeightedServer; capacity: number }> = [];
+    private remainingServerCapacity: Array<{
+        server: IWeightedServer;
+        capacity: number;
+    }> = [];
+
     private currentIndex = 0;
 
     /**

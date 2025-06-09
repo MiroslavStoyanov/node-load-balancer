@@ -1,12 +1,13 @@
-import { ILoadBalancer, IServer } from 'node-load-balancer';
+import { IServer } from 'node-load-balancer';
 import { BaseLoadBalancer } from './BaseLoadBalancer';
+import { ILoadBalancingStrategy } from './LoadBalancingStrategy';
 
 /**
  * Represents a round-robin load balancer that distributes incoming requests evenly across backend servers.
  * Distributes the traffic to the load balancers in rotation, each request going to the next backend server in the list.
  * Once the end of the list is reached, it loops back to the first server.
  */
-export class RoundRobinLoadBalancer extends BaseLoadBalancer<IServer> implements ILoadBalancer {
+export class RoundRobinLoadBalancer extends BaseLoadBalancer<IServer> implements ILoadBalancingStrategy {
     private currentIndex = 0;
 
     /**

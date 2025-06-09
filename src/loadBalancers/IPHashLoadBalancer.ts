@@ -1,11 +1,12 @@
-import { IIPHashLoadBalancer, IServer } from 'node-load-balancer';
+import { IServer } from 'node-load-balancer';
 import { BaseLoadBalancer } from './BaseLoadBalancer';
+import { ILoadBalancingStrategy } from './LoadBalancingStrategy';
 
 /**
  * Represents an IP hash load balancer that distributes incoming requests unevenly across backend servers.
  * The client’s IP address is hashed and the hash is used to determine which server to send the request to.
  */
-export class IPHashLoadBalancer extends BaseLoadBalancer<IServer> implements IIPHashLoadBalancer {
+export class IPHashLoadBalancer extends BaseLoadBalancer<IServer> implements ILoadBalancingStrategy {
     private currentIndex = 0;
 
     /**

@@ -1,4 +1,5 @@
 import { IServer } from 'node-load-balancer';
+import { LoadBalancer } from '../../src/loadBalancers/LoadBalancer';
 import { RoundRobinLoadBalancer } from '../../src/loadBalancers/RoundRobinLoadBalancer';
 
 const servers: IServer[] = [
@@ -18,10 +19,7 @@ const servers: IServer[] = [
 
 const NUMBER_OF_REQUESTS = 1000;
 
-async function simulateAsynchronousRequests(
-    loadBalancer: RoundRobinLoadBalancer,
-    numRequests: number,
-): Promise<IServer[]> {
+async function simulateAsynchronousRequests(loadBalancer: LoadBalancer, numRequests: number): Promise<IServer[]> {
     const requests: IServer[] = [];
     for (let i = 0; i < numRequests; i++) {
         const server = loadBalancer.getNextActiveServer();
@@ -32,7 +30,8 @@ async function simulateAsynchronousRequests(
     return Promise.all(requests);
 }
 
-const loadBalancer = new RoundRobinLoadBalancer(servers);
+const strategy = new RoundRobinLoadBalancer(servers);
+const loadBalancer = new LoadBalancer(strategy);
 
 (async () => {
     const results = await simulateAsynchronousRequests(loadBalancer, NUMBER_OF_REQUESTS);

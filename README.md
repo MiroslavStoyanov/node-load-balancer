@@ -78,7 +78,12 @@ console.log(`Request from IP ${requestIp} sent to: ${activeServer?.url}`);
 You can easily integrate the load balancer library with an Express.js application using the proxyMiddleware function provided by each load balancer. Here's how:
 ```typescript
 import express from 'express';
-import { RoundRobinLoadBalancer, proxyMiddleware } from 'node-load-balancer';
+import {
+  LoadBalancer,
+  RoundRobinLoadBalancer,
+  WeightedRoundRobinLoadBalancer,
+  proxyMiddleware,
+} from 'node-load-balancer';
 
 const app = express();
 
@@ -89,10 +94,19 @@ const serverUrls = [
   // ... more server URLs
 ];
 
-const loadBalancer = new RoundRobinLoadBalancer(serverUrls);
+const strategy = new RoundRobinLoadBalancer(serverUrls);
+const loadBalancer = new LoadBalancer(strategy);
 
 // Use proxyMiddleware to balance requests in your Express app
 app.use(proxyMiddleware(loadBalancer));
+
+// Swap strategies if needed
+loadBalancer.setStrategy(
+  new WeightedRoundRobinLoadBalancer([
+    { url: 'http://server1', weight: 5 },
+    { url: 'http://server2', weight: 10 },
+  ]),
+);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
@@ -105,7 +119,11 @@ NestJS applications can use the same middleware approach because they run on Exp
 ```typescript
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { RoundRobinLoadBalancer, proxyMiddleware } from 'node-load-balancer';
+import {
+  LoadBalancer,
+  RoundRobinLoadBalancer,
+  proxyMiddleware,
+} from 'node-load-balancer';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -116,7 +134,8 @@ async function bootstrap() {
     'http://server3',
   ];
 
-  const loadBalancer = new RoundRobinLoadBalancer(serverUrls);
+  const strategy = new RoundRobinLoadBalancer(serverUrls);
+  const loadBalancer = new LoadBalancer(strategy);
 
   app.use(proxyMiddleware(loadBalancer));
 

@@ -1,6 +1,7 @@
-import { ILoadBalancer, IServer } from 'node-load-balancer';
+import { IServer } from 'node-load-balancer';
+import { ILoadBalancingStrategy } from './LoadBalancingStrategy';
 
-export abstract class BaseLoadBalancer<T extends IServer> implements ILoadBalancer {
+export abstract class BaseLoadBalancer<T extends IServer> implements ILoadBalancingStrategy {
     protected servers: T[];
 
     constructor(servers: T[]) {
