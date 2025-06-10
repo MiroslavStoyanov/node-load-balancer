@@ -22,20 +22,21 @@ export class RoundRobinLoadBalancer extends BaseLoadBalancer<IServer> implements
      * Gets the next active server based on the round-robin logic.
      * @returns The next active server or null if no servers are available.
      */
-    getNextActiveServer(): IServer | null {
-        const activeServers = this.servers.filter((server: IServer) => server.isActive);
+    async getNextActiveServer(): Promise<IServer | null> {
+        return this.mutex.runExclusive(() => {
+            const activeServers = this.servers.filter((server: IServer) => server.isActive);
 
-        if (activeServers.length === 0) {
-            return null;
-        }
+            if (activeServers.length === 0) {
+                return null;
+            }
 
-        // short-circuit if just 1 server
-        if (activeServers.length === 1) {
-            return activeServers[0];
-        }
+            if (activeServers.length === 1) {
+                return activeServers[0];
+            }
 
-        const server = activeServers[this.currentIndex];
-        this.currentIndex = (this.currentIndex + 1) % activeServers.length;
-        return server;
+            const server = activeServers[this.currentIndex];
+            this.currentIndex = (this.currentIndex + 1) % activeServers.length;
+            return server;
+        });
     }
 }

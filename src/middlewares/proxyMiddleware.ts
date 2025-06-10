@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 export function proxyMiddleware(loadBalancer: ILoadBalancingStrategy) {
     return async (req: Request, res: Response) => {
         try {
-            const activeServer = loadBalancer.getNextActiveServer();
+            const activeServer = await loadBalancer.getNextActiveServer();
 
             if (!activeServer) {
                 throw new Error('No active servers available.');

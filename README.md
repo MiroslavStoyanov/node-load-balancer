@@ -11,6 +11,10 @@ The purpose of this project is to offer an easy-to-use Node.js library that prov
 - **Round Robin Load Balancing:** Distributes requests sequentially across backend servers.
 - **Weighted Round Robin Load Balancing:** Assigns servers different weights for proportional load distribution.
 - **IP Hash Load Balancing:** Ensures that requests from the same IP address are consistently directed to the same server.
+- **Least Connections:** Chooses the server with the fewest active connections.
+- **Random Choice / Power of Two Choices:** Picks a random subset of servers and forwards to the least loaded.
+- **Consistent Hashing:** Minimizes cache disruption when servers are added or removed.
+- **Pluggable Health Checks:** Periodically verify server availability with customizable strategies.
 
 ## Installation
 
@@ -33,7 +37,7 @@ const serverUrls = [
 
 const loadBalancer = new RoundRobinLoadBalancer(serverUrls);
 
-const activeServer = loadBalancer.getNextActiveServer();
+const activeServer = await loadBalancer.getNextActiveServer();
 console.log(`Request sent to: ${activeServer?.url}`);
 ```
 
@@ -51,7 +55,7 @@ const serverConfigs = [
 
 const loadBalancer = new WeightedRoundRobinLoadBalancer(serverConfigs);
 
-const activeServer = loadBalancer.getNextActiveServer();
+const activeServer = await loadBalancer.getNextActiveServer();
 console.log(`Request sent to: ${activeServer?.url}`);
 ```
 

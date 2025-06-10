@@ -23,8 +23,8 @@ export class IPHashLoadBalancer extends BaseLoadBalancer<IServer> implements ILo
      * take the request IP into account. For IP-based routing, use
      * {@link getServerForRequest} instead.
      */
-    getNextActiveServer(): IServer | null {
-        return this.getNextServerRoundRobin();
+    async getNextActiveServer(): Promise<IServer | null> {
+        return this.mutex.runExclusive(() => this.getNextServerRoundRobin());
     }
 
     private getNextServerRoundRobin(): IServer | null {
