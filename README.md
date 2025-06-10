@@ -78,6 +78,57 @@ const activeServer = loadBalancer.getServerForRequest(requestIp);
 console.log(`Request from IP ${requestIp} sent to: ${activeServer?.url}`);
 ```
 
+#### Least Connections Load Balancer
+The Least Connections Load Balancer forwards requests to the server with the fewest active connections.
+```typescript
+import { LeastConnectionsLoadBalancer } from 'node-load-balancer';
+
+const servers = [
+  { url: 'http://server1', isActive: true, connections: 0 },
+  { url: 'http://server2', isActive: true, connections: 0 },
+  { url: 'http://server3', isActive: true, connections: 0 },
+];
+
+const loadBalancer = new LeastConnectionsLoadBalancer(servers);
+const activeServer = await loadBalancer.getNextActiveServer();
+console.log(`Request sent to: ${activeServer?.url}`);
+loadBalancer.releaseServer(activeServer!.url);
+```
+
+#### Random Choice Load Balancer
+The Random Choice Load Balancer picks a random subset of servers and forwards to the least loaded one.
+```typescript
+import { RandomChoiceLoadBalancer } from 'node-load-balancer';
+
+const servers = [
+  { url: 'http://server1', isActive: true, connections: 0 },
+  { url: 'http://server2', isActive: true, connections: 0 },
+  { url: 'http://server3', isActive: true, connections: 0 },
+];
+
+const loadBalancer = new RandomChoiceLoadBalancer(servers, 2);
+const activeServer = await loadBalancer.getNextActiveServer();
+console.log(`Request sent to: ${activeServer?.url}`);
+loadBalancer.releaseServer(activeServer!.url);
+```
+
+#### Consistent Hash Load Balancer
+The Consistent Hash Load Balancer maps keys to servers while minimizing disruption when servers change.
+```typescript
+import { ConsistentHashLoadBalancer } from 'node-load-balancer';
+
+const serverUrls = [
+  { url: 'http://server1', isActive: true },
+  { url: 'http://server2', isActive: true },
+  { url: 'http://server3', isActive: true },
+];
+
+const loadBalancer = new ConsistentHashLoadBalancer(serverUrls);
+const userId = 'user-123';
+const server = loadBalancer.getServerForKey(userId);
+console.log(`User ${userId} routed to: ${server?.url}`);
+```
+
 #### Load Balancer Factory
 Use the `LoadBalancerFactory` to instantiate a strategy based on configuration:
 ```typescript
