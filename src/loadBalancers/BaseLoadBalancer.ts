@@ -1,14 +1,20 @@
 import { IServer } from 'node-load-balancer';
 import { ILoadBalancingStrategy } from './LoadBalancingStrategy';
+import { IHealthCheckStrategy } from '../healthChecks/IHealthCheckStrategy';
+import { NoopHealthCheck } from '../healthChecks/NoopHealthCheck';
+import { Mutex } from '../utils/Mutex';
 
 export abstract class BaseLoadBalancer<T extends IServer> implements ILoadBalancingStrategy {
     protected servers: T[];
+    protected healthCheck: IHealthCheckStrategy;
+    protected mutex = new Mutex();
 
-    constructor(servers: T[]) {
+    constructor(servers: T[], healthCheck: IHealthCheckStrategy = new NoopHealthCheck()) {
         this.servers = servers;
+        this.healthCheck = healthCheck;
     }
 
-    abstract getNextActiveServer(): T | null;
+    abstract getNextActiveServer(): Promise<T | null>;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     addServer(url: string, _weight?: number): void {
@@ -21,6 +27,14 @@ export abstract class BaseLoadBalancer<T extends IServer> implements ILoadBalanc
         if (serverIndex !== -1) {
             this.servers.splice(serverIndex, 1);
         }
+    }
+
+    async startHealthCheck(interval = 10000): Promise<void> {
+        setInterval(async () => {
+            for (const server of this.servers) {
+                server.isActive = await this.healthCheck.check(server);
+            }
+        }, interval);
     }
 
     disableServer(url: string): void {

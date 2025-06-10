@@ -12,7 +12,7 @@ export class LoadBalancer implements ILoadBalancingStrategy {
         this.strategy = strategy;
     }
 
-    getNextActiveServer(): IServer | null {
+    getNextActiveServer(): Promise<IServer | null> {
         return this.strategy.getNextActiveServer();
     }
 

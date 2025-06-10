@@ -11,6 +11,10 @@ The purpose of this project is to offer an easy-to-use Node.js library that prov
 - **Round Robin Load Balancing:** Distributes requests sequentially across backend servers.
 - **Weighted Round Robin Load Balancing:** Assigns servers different weights for proportional load distribution.
 - **IP Hash Load Balancing:** Ensures that requests from the same IP address are consistently directed to the same server.
+- **Least Connections:** Chooses the server with the fewest active connections.
+- **Random Choice / Power of Two Choices:** Picks a random subset of servers and forwards to the least loaded.
+- **Consistent Hashing:** Minimizes cache disruption when servers are added or removed.
+- **Pluggable Health Checks:** Periodically verify server availability with customizable strategies.
 
 ## Installation
 
@@ -33,7 +37,7 @@ const serverUrls = [
 
 const loadBalancer = new RoundRobinLoadBalancer(serverUrls);
 
-const activeServer = loadBalancer.getNextActiveServer();
+const activeServer = await loadBalancer.getNextActiveServer();
 console.log(`Request sent to: ${activeServer?.url}`);
 ```
 
@@ -51,7 +55,7 @@ const serverConfigs = [
 
 const loadBalancer = new WeightedRoundRobinLoadBalancer(serverConfigs);
 
-const activeServer = loadBalancer.getNextActiveServer();
+const activeServer = await loadBalancer.getNextActiveServer();
 console.log(`Request sent to: ${activeServer?.url}`);
 ```
 
@@ -72,6 +76,57 @@ const loadBalancer = new IPHashLoadBalancer(serverUrls);
 const requestIp = '192.168.1.1';
 const activeServer = loadBalancer.getServerForRequest(requestIp);
 console.log(`Request from IP ${requestIp} sent to: ${activeServer?.url}`);
+```
+
+#### Least Connections Load Balancer
+The Least Connections Load Balancer forwards requests to the server with the fewest active connections.
+```typescript
+import { LeastConnectionsLoadBalancer } from 'node-load-balancer';
+
+const servers = [
+  { url: 'http://server1', isActive: true, connections: 0 },
+  { url: 'http://server2', isActive: true, connections: 0 },
+  { url: 'http://server3', isActive: true, connections: 0 },
+];
+
+const loadBalancer = new LeastConnectionsLoadBalancer(servers);
+const activeServer = await loadBalancer.getNextActiveServer();
+console.log(`Request sent to: ${activeServer?.url}`);
+loadBalancer.releaseServer(activeServer!.url);
+```
+
+#### Random Choice Load Balancer
+The Random Choice Load Balancer picks a random subset of servers and forwards to the least loaded one.
+```typescript
+import { RandomChoiceLoadBalancer } from 'node-load-balancer';
+
+const servers = [
+  { url: 'http://server1', isActive: true, connections: 0 },
+  { url: 'http://server2', isActive: true, connections: 0 },
+  { url: 'http://server3', isActive: true, connections: 0 },
+];
+
+const loadBalancer = new RandomChoiceLoadBalancer(servers, 2);
+const activeServer = await loadBalancer.getNextActiveServer();
+console.log(`Request sent to: ${activeServer?.url}`);
+loadBalancer.releaseServer(activeServer!.url);
+```
+
+#### Consistent Hash Load Balancer
+The Consistent Hash Load Balancer maps keys to servers while minimizing disruption when servers change.
+```typescript
+import { ConsistentHashLoadBalancer } from 'node-load-balancer';
+
+const serverUrls = [
+  { url: 'http://server1', isActive: true },
+  { url: 'http://server2', isActive: true },
+  { url: 'http://server3', isActive: true },
+];
+
+const loadBalancer = new ConsistentHashLoadBalancer(serverUrls);
+const userId = 'user-123';
+const server = loadBalancer.getServerForKey(userId);
+console.log(`User ${userId} routed to: ${server?.url}`);
 ```
 
 #### Load Balancer Factory
