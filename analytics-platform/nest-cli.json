@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/analytics-platform/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/analytics-platform/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/analytics-platform",
+  "projects": {
+    "analytics-platform": {
+      "type": "application",
+      "root": "apps/analytics-platform",
+      "entryFile": "main",
+      "sourceRoot": "apps/analytics-platform/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/analytics-platform/tsconfig.app.json"
+      }
+    },
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "event-processor": {
+      "type": "application",
+      "root": "apps/event-processor",
+      "entryFile": "main",
+      "sourceRoot": "apps/event-processor/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/event-processor/tsconfig.app.json"
+      }
+    },
+    "shared": {
+      "type": "library",
+      "root": "libs/shared",
+      "entryFile": "index",
+      "sourceRoot": "libs/shared/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/shared/tsconfig.lib.json"
+      }
+    }
+  }
+}
